@@ -1,0 +1,30 @@
+package movement;
+
+/**
+ * @version 1.0
+ */
+
+public class AngleCalculator
+{
+    public double getDistance(Pair A, Pair B)
+    {
+    	System.out.println(Math.sqrt(Math.pow(A.getX() - B.getX(), 2) + Math.pow(A.getY() - B.getY(), 2)));
+        return Math.sqrt(Math.pow(A.getX() - B.getX(), 2) + Math.pow(A.getY() - B.getY(), 2));
+    }
+
+    public double getAngle(Pair A, Pair B, Pair C)
+    {
+    	double distAB = this.getDistance(A, B);
+    	double distAC = this.getDistance(A, C);
+    	double distBC = this.getDistance(B, C);
+    	double angle = Math.acos((Math.pow(distAC,2) + Math.pow(distBC,2) - Math.pow(distAB,2))/(2*distAC*distBC));
+    	
+        return this.toDegrees(angle);
+    }
+    
+    public double toDegrees(double value)
+    {
+    	double degrees = value*180/Math.PI;
+        return Math.round(degrees*100)/100.0;
+    }
+}
