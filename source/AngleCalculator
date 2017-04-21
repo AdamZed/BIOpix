@@ -1,14 +1,13 @@
 package movement;
 
 /**
- * @version 1.0
+ * @version 1.0.1
  */
 
 public class AngleCalculator
 {
-    public double getDistance(Pair A, Pair B)
+    private double getDistance(Pair A, Pair B)
     {
-    	System.out.println(Math.sqrt(Math.pow(A.getX() - B.getX(), 2) + Math.pow(A.getY() - B.getY(), 2)));
         return Math.sqrt(Math.pow(A.getX() - B.getX(), 2) + Math.pow(A.getY() - B.getY(), 2));
     }
 
@@ -22,7 +21,7 @@ public class AngleCalculator
         return this.toDegrees(angle);
     }
     
-    public double toDegrees(double value)
+    private double toDegrees(double value)
     {
     	double degrees = value*180/Math.PI;
         return Math.round(degrees*100)/100.0;
