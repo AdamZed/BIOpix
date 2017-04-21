@@ -5,7 +5,7 @@ import java.awt.event.*;
 import javax.swing.*;
 
 /**
- * @version 0.0.1
+ * @version 1.0
  */
  
 public class LineDrawingTool extends JComponent
