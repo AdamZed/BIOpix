@@ -4,6 +4,10 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
+/**
+ * @version 0.0.1
+ */
+ 
 public class LineDrawingTool extends JComponent
 {
     private Image image;
@@ -124,9 +128,5 @@ class SwingPaint
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     // show the swing paint result
     frame.setVisible(true);
-
-
   }
-
 }
-
