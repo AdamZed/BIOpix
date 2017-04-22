@@ -1,6 +1,3 @@
-# MARZ Group Computer Science CPT
+# DRAMZ Group Computer Science CPT
 
-(Still) Subject to change
-
-
-adam
+Movement App
