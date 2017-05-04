@@ -7,7 +7,7 @@ import javax.swing.*;
 /**
  * @version 1.0
  */
- 
+
 public class LineDrawingTool extends JComponent
 {
     private Image image;
@@ -32,9 +32,11 @@ public class LineDrawingTool extends JComponent
       {
       public void mouseDragged(MouseEvent e) {
         // coord x,y when drag mouse
+        clear();
         currentX = e.getX();
         currentY = e.getY();
-
+        g2.drawLine(firstX, firstY, currentX, currentY);
+        repaint();
         }
     });
 
@@ -42,6 +44,7 @@ public class LineDrawingTool extends JComponent
       public void mouseReleased(MouseEvent e)
       {
           g2.drawLine(firstX, firstY, currentX, currentY);
+          repaint();
        }
       });
 
@@ -78,29 +81,29 @@ public class LineDrawingTool extends JComponent
 
 }
 
-class SwingPaint 
+class SwingPaint
 {
 
   JButton clearBtn;
   LineDrawingTool drawArea;
 
-  ActionListener actionListener = new ActionListener() 
+  ActionListener actionListener = new ActionListener()
   {
-    public void actionPerformed(ActionEvent e) 
+    public void actionPerformed(ActionEvent e)
     {
-      if (e.getSource() == clearBtn) 
+      if (e.getSource() == clearBtn)
       {
         drawArea.clear();
       }
     }
   };
 
-  public static void main(String[] args) 
+  public static void main(String[] args)
   {
     new SwingPaint().show();
   }
 
-  public void show() 
+  public void show()
   {
     // create main frame
     JFrame frame = new JFrame("Line Tool");
