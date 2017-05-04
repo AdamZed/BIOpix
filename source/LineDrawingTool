@@ -4,10 +4,6 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-/**
- * @version 1.0.1
- */
-
 public class LineDrawingTool extends JComponent
 {
     private Image image;
@@ -23,6 +19,7 @@ public class LineDrawingTool extends JComponent
         addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e)
             {
+                // save coord x,y when mouse is pressed
                     firstX = e.getX();
                     firstY = e.getY();
             }
@@ -36,7 +33,7 @@ public class LineDrawingTool extends JComponent
         currentX = e.getX();
         currentY = e.getY();
         g2.drawLine(firstX, firstY, currentX, currentY);
-        repaint();
+
         }
     });
 
@@ -44,7 +41,6 @@ public class LineDrawingTool extends JComponent
       public void mouseReleased(MouseEvent e)
       {
           g2.drawLine(firstX, firstY, currentX, currentY);
-          repaint();
        }
       });
 
@@ -65,6 +61,7 @@ public class LineDrawingTool extends JComponent
     g.drawImage(image, 0, 0, null);
   }
 
+  // now we create exposed methods
   public void clear() {
     g2.setPaint(Color.white);
     // draw white on entire draw area to clear
@@ -116,6 +113,7 @@ class SwingPaint
     // add to content pane
     content.add(drawArea, BorderLayout.CENTER);
 
+    // create controls to apply colors and call clear feature
     JPanel controls = new JPanel();
 
     clearBtn = new JButton("Clear");
@@ -131,5 +129,10 @@ class SwingPaint
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     // show the swing paint result
     frame.setVisible(true);
+
+
   }
+
 }
+
+
