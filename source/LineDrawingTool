@@ -1,7 +1,7 @@
 package movement;
 
 /**
- * @version 1.2.0
+ * @version 1.2.1
  */
 
 import java.awt.*;
@@ -22,18 +22,14 @@ public class LineDrawingTool extends JComponent {
 		setDoubleBuffered(false);
 		addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
-				// save coord x,y when mouse is pressed
-				first.setX(e.getX());
-				first.setY(e.getY());
+				first.setBoth(e.getX(),e.getY());
 			}
 		});
 
 		addMouseMotionListener(new MouseMotionAdapter() {
 			public void mouseDragged(MouseEvent e) {
-				// coord x,y when drag mouse
 				clear();
-				current.setX(e.getX());
-				current.setY(e.getY());
+				current.setBoth(e.getX(), e.getY());
 				g2.drawLine(first.getX(), first.getY(), current.getX(), current.getY());
 
 			}
@@ -41,8 +37,7 @@ public class LineDrawingTool extends JComponent {
 
 		addMouseListener(new MouseAdapter() {
 			public void mouseReleased(MouseEvent e) {
-				second.setX(current.getX());
-				second.setY(current.getY());
+				second.setBoth(current.getX(), current.getY());
 				g2.drawLine(first.getX(), first.getY(), second.getX(), second.getY());
 			}
 		});
