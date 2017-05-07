@@ -1,14 +1,13 @@
 package movement;
 
 /**
- * @version 1.1.0
+ * @version 1.1.1
  */
 
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -49,17 +48,21 @@ class SwingPaint {
 	ActionListener actionListener = new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			if (e.getSource() == clearBtn) {
-				drawAngle.clear();
-				drawAngle.firstLine = true;
+				if (type == 0)
+					drawLine.clear();
+				else if (type == 1) {
+					drawAngle.clear();
+					drawAngle.firstLine = true;
+				}
 			}
 		}
 	};
 
 	public void show(boolean load) {
-		// create main frame
+
 		JFrame frame = new JFrame();
 		Container content = frame.getContentPane();
-		// set layout on content pane
+
 		content.setLayout(new BorderLayout());
 
 		if (type == 0) {
@@ -70,20 +73,6 @@ class SwingPaint {
 
 			content.add(drawLine, BorderLayout.CENTER);
 
-			// create controls to apply colors and call clear feature
-			JPanel controls = new JPanel();
-
-			clearBtn = new JButton("Clear");
-			clearBtn.addActionListener(actionListener);
-			controls.add(clearBtn);
-
-			content.add(controls, BorderLayout.NORTH);
-
-			frame.setSize(600, 600);
-			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-			frame.setVisible(true);
-
 		} else if (type == 1) {
 			drawAngle = new AngleDrawingTool();
 
@@ -91,21 +80,21 @@ class SwingPaint {
 				drawAngle.loadAngle(first, second, third);
 
 			content.add(drawAngle, BorderLayout.CENTER);
-
-			// create controls to apply colors and call clear feature
-			JPanel controls = new JPanel();
-
-			clearBtn = new JButton("Clear");
-			clearBtn.addActionListener(actionListener);
-			controls.add(clearBtn);
-
-			content.add(controls, BorderLayout.NORTH);
-
-			frame.setSize(600, 600);
-			frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-			frame.setVisible(true);
 		}
+
+		JPanel controls = new JPanel();
+
+		clearBtn = new JButton("Clear");
+		clearBtn.addActionListener(actionListener);
+		controls.add(clearBtn);
+
+		content.add(controls, BorderLayout.NORTH);
+
+		frame.setSize(600, 600);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		frame.setVisible(true);
+
 	}
 
 	private void loadLine(Pair first, Pair second) {
