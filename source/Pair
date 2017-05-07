@@ -1,7 +1,7 @@
 package movement;
 
 /**
- * @version 1.0.1
+ * @version 1.0.2
  */
 
 public class Pair
@@ -20,6 +20,7 @@ public class Pair
 	public int getX () { return X; }
 	public int getY () { return Y; }	
 	public void setX (int newX) { X = newX; }
-	public void setY (int newY) { Y = newY; }	
+	public void setY (int newY) { Y = newY; }
+	public void setBoth (int newX, int newY) {X = newX; Y = newY;}
 	
 }
