@@ -1,0 +1,132 @@
+package movement;
+
+import javafx.application.*;
+import javafx.geometry.*;
+import javafx.scene.control.*;
+import javafx.scene.layout.*;
+import javafx.stage.*;
+import javafx.scene.*;
+
+/**
+ * @version 1.0
+ */
+
+public class Buttons extends Application
+{
+
+	static int selected = -1;
+	
+	public void main(String[] args)
+	{
+		launch(args);
+	}
+	
+	public void start(Stage mainStage) throws Exception {
+		
+		Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
+		mainStage.setX(primaryScreenBounds.getMinX());
+		mainStage.setY(primaryScreenBounds.getMinY());
+		mainStage.setWidth(primaryScreenBounds.getWidth());
+		mainStage.setHeight(primaryScreenBounds.getHeight());
+		mainStage.show();
+		mainStage.setAlwaysOnTop(true);
+		mainStage.setResizable(false);
+		mainStage.setMaximized(true);
+		mainStage.setTitle("BIOpix");
+		
+		FlowPane root = new FlowPane(Orientation.VERTICAL);
+		root.setStyle("-fx-background: #343434;");
+		root.setAlignment(Pos.TOP_LEFT);
+		
+		Button grid = new Button(); // 0
+		Button draw = new Button(); // 1
+		Button line = new Button(); // 2
+		Button angle = new Button(); // 3
+		
+		// grid button ID 0
+		grid.setGraphic(Images.grid);
+		grid.setStyle(Images.style);
+		grid.setOnMouseEntered( me -> {
+			if(selected != 0)
+				grid.setGraphic(Images.gridMO);
+		});
+		grid.setOnMouseExited( me -> {
+			if(selected != 0)
+				grid.setGraphic(Images.grid);
+		});
+		grid.setOnMouseClicked( me ->
+		{
+			grid.setGraphic(Images.gridSel);
+			draw.setGraphic(Images.draw);
+			line.setGraphic(Images.line);
+			angle.setGraphic(Images.angle);
+			selected = 0;
+		});
+		
+		// draw button ID 1
+		draw.setGraphic(Images.draw);
+		draw.setStyle(Images.style);
+		draw.setOnMouseEntered( me -> {
+			if(selected != 1)
+				draw.setGraphic(Images.drawMO);
+		});
+		draw.setOnMouseExited( me -> {
+			if(selected != 1)
+				draw.setGraphic(Images.draw);
+		});
+		draw.setOnMouseClicked( me ->
+		{
+			grid.setGraphic(Images.grid);
+			draw.setGraphic(Images.drawSel);
+			line.setGraphic(Images.line);
+			angle.setGraphic(Images.angle);
+			selected = 1;
+		});
+		
+		// line button ID 2
+		line.setGraphic(Images.line);
+		line.setStyle(Images.style);
+		line.setOnMouseEntered( me -> {
+			if(selected != 2)
+				line.setGraphic(Images.lineMO);
+		});
+		line.setOnMouseExited( me -> {
+			if(selected != 2)
+				line.setGraphic(Images.line);
+		});
+		line.setOnMouseClicked( me ->
+		{
+			grid.setGraphic(Images.grid);
+			draw.setGraphic(Images.draw);
+			line.setGraphic(Images.lineSel);
+			angle.setGraphic(Images.angle);
+			selected = 2;
+		});
+		
+		// angle button ID 3
+		angle.setGraphic(Images.angle);
+		angle.setStyle(Images.style);
+		angle.setOnMouseEntered( me -> {
+			if(selected != 3)
+				angle.setGraphic(Images.angleMO);
+		});
+		angle.setOnMouseExited( me -> {
+			if(selected != 3)
+				angle.setGraphic(Images.angle);
+		});
+		angle.setOnMouseClicked( me ->
+		{
+			grid.setGraphic(Images.grid);
+			draw.setGraphic(Images.draw);
+			line.setGraphic(Images.line);
+			angle.setGraphic(Images.angleSel);
+			selected = 3;
+		});
+
+		
+		root.getChildren().addAll(grid,draw,line,angle);
+
+		mainStage.setScene(new Scene(root));
+		
+	}
+}
