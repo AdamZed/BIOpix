@@ -1,14 +1,15 @@
 package movement;
 
-/**
- * @version 1.0
- */
-
+import javafx.geometry.Rectangle2D;
 import javafx.scene.image.*;
+import javafx.stage.Screen;
 
 public class Images {
 	
+	static final Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
 	static final String style = "-fx-background-color: transparent; -fx-padding: 5, 5, 5, 5;";
+	
+	static final ImageView upload = new ImageView(new Image("/buttons/upload.png"));
 		
 	static final ImageView angle = new ImageView(new Image("/buttons/angle.png", 40, 40, true, true));
 	static final ImageView angleSel = new ImageView(new Image("/buttons/angleSel.png", 40, 40, true, true));
@@ -25,4 +26,7 @@ public class Images {
 	static final ImageView grid = new ImageView(new Image("/buttons/grid.png", 40, 40, true, true));
 	static final ImageView gridSel = new ImageView(new Image("/buttons/gridSel.png", 40, 40, true, true));
 	static final ImageView gridMO = new ImageView(new Image("/buttons/gridMO.png", 40, 40, true, true));
+	
+	static final ImageView drag = new ImageView(new Image("/buttons/drag.png", 40, 40, true, true));
+	
 }
