@@ -1,26 +1,26 @@
 package movement;
 
 /**
- * @version 1.0.2
+ * @version 1.1
  */
 
 public class Pair
 {
-	private int X = 0;
-	private int Y = 0;
+	private double X = 0;
+	private double Y = 0;
 	
 	public Pair() {}
 
-	public Pair(int x, int y)
+	public Pair(double x, double y)
 	{
 		this.X = x;
 		this.Y = y;
 	}
 	
-	public int getX () { return X; }
-	public int getY () { return Y; }	
-	public void setX (int newX) { X = newX; }
-	public void setY (int newY) { Y = newY; }
-	public void setBoth (int newX, int newY) {X = newX; Y = newY;}
+	public double getX () { return X; }
+	public double getY () { return Y; }	
+	public void setX (double newX) { X = newX; }
+	public void setY (double newY) { Y = newY; }	
+	public void setBoth (double newX, double newY) {X = newX; Y = newY;}
 	
 }
