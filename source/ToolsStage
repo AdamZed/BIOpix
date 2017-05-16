@@ -1,0 +1,140 @@
+package movement;
+
+/**
+ * @version 2.0
+ */
+
+import javafx.geometry.Orientation;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.layout.FlowPane;
+import javafx.stage.Screen;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+
+public class ToolsStage {
+
+	private static Stage toolsStage = new Stage();
+	private static int selected = -1;
+	private static double initialX,initialY;
+	private static boolean dragging = false;
+	private static boolean disableDrag = true;
+	
+	public static Stage getStage()
+	{
+
+		toolsStage.setAlwaysOnTop(true);
+		toolsStage.setTitle("Tools");
+		toolsStage.setX(0);
+		toolsStage.setY(Screen.getPrimary().getVisualBounds().getHeight() - 27);
+		toolsStage.initStyle(StageStyle.UNDECORATED);
+
+		FlowPane buttonRoot = new FlowPane(Orientation.HORIZONTAL);
+		buttonRoot.setStyle("-fx-background: #343434;");
+
+		Button grid = new Button(); // 0
+		Button draw = new Button(); // 1
+		Button line = new Button(); // 2
+		Button angle = new Button(); // 3
+		Button drag = new Button();
+
+		// grid button ID 0
+		grid.setGraphic(Images.grid);
+		grid.setStyle(Images.style);
+		grid.setOnMouseEntered(me -> {
+			if (selected != 0)
+				grid.setGraphic(Images.gridMO);
+		});
+		grid.setOnMouseExited(me -> {
+			if (selected != 0)
+				grid.setGraphic(Images.grid);
+		});
+		grid.setOnMouseClicked(me -> {
+			grid.setGraphic(Images.gridSel);
+			draw.setGraphic(Images.draw);
+			line.setGraphic(Images.line);
+			angle.setGraphic(Images.angle);
+			selected = 0;
+		});
+
+		// draw button ID 1
+		draw.setGraphic(Images.draw);
+		draw.setStyle(Images.style);
+		draw.setOnMouseEntered(me -> {
+			if (selected != 1)
+				draw.setGraphic(Images.drawMO);
+		});
+		draw.setOnMouseExited(me -> {
+			if (selected != 1)
+				draw.setGraphic(Images.draw);
+		});
+		draw.setOnMouseClicked(me -> {
+			grid.setGraphic(Images.grid);
+			draw.setGraphic(Images.drawSel);
+			line.setGraphic(Images.line);
+			angle.setGraphic(Images.angle);
+			selected = 1;
+		});
+
+		// line button ID 2
+		line.setGraphic(Images.line);
+		line.setStyle(Images.style);
+		line.setOnMouseEntered(me -> {
+			if (selected != 2)
+				line.setGraphic(Images.lineMO);
+		});
+		line.setOnMouseExited(me -> {
+			if (selected != 2)
+				line.setGraphic(Images.line);
+		});
+		line.setOnMouseClicked(me -> {
+			grid.setGraphic(Images.grid);
+			draw.setGraphic(Images.draw);
+			line.setGraphic(Images.lineSel);
+			angle.setGraphic(Images.angle);
+			selected = 2;
+		});
+
+		// angle button ID 3
+		angle.setGraphic(Images.angle);
+		angle.setStyle(Images.style);
+		angle.setOnMouseEntered(me -> {
+			if (selected != 3)
+				angle.setGraphic(Images.angleMO);
+		});
+		angle.setOnMouseExited(me -> {
+			if (selected != 3)
+				angle.setGraphic(Images.angle);
+		});
+		angle.setOnMouseClicked(me -> {
+			grid.setGraphic(Images.grid);
+			draw.setGraphic(Images.draw);
+			line.setGraphic(Images.line);
+			angle.setGraphic(Images.angleSel);
+			selected = 3;
+		});
+		
+		drag.setGraphic(Images.drag);
+		drag.setStyle(Images.style);
+		drag.setOnMouseDragged( md -> {
+			if(!dragging)
+			{
+				initialX = md.getSceneX();
+				initialY = md.getSceneY();
+				dragging = true;
+			} else {
+				toolsStage.setX(toolsStage.getX() + md.getSceneX() - initialX);
+				toolsStage.setY(toolsStage.getY() + md.getSceneY() - initialY);
+			}			
+		});
+		drag.setOnMouseDragReleased( md -> dragging = false);
+
+		if(disableDrag)
+			buttonRoot.getChildren().addAll(grid, draw, line, angle);
+		else buttonRoot.getChildren().addAll(grid, draw, line, angle, drag);
+
+		toolsStage.setScene(new Scene(buttonRoot));
+		
+		return toolsStage;
+	}
+}
