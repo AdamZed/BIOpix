@@ -1,184 +1,114 @@
 package movement;
 
-import java.awt.*;
 import java.io.*;
-import java.util.logging.*;
 import javafx.geometry.*;
-import javafx.geometry.Insets;
 import javafx.application.*;
 import javafx.scene.*;
-import javafx.scene.control.Button;
+import javafx.scene.image.*;
+import javafx.scene.image.Image;
 import javafx.scene.layout.*;
-
+import javafx.scene.paint.Color;
 import javafx.stage.*;
 
 /**
- * @version 1.0
+ * @version 1.3
  */
 
 public class MainWindow extends Application {
 
-	static int selected = -1;
-	private Desktop desktop = Desktop.getDesktop();
+	static ImageView picture;
+	ToolsStage toolsStage;
+	AngleDrawingTool angle;
+	LineDrawingTool line;
+	GridTool grid;
+	Pane toolsPane;
 
-	public void start(Stage stage) {
-		stage.setTitle("BIOpix");
-
-		Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
-		stage.setX(primaryScreenBounds.getMinX());
-		stage.setY(primaryScreenBounds.getMinY());
-		stage.setWidth(primaryScreenBounds.getWidth());
-		stage.setHeight(primaryScreenBounds.getHeight());
-
+	public void start(Stage mainStage) {
 		final FileChooser fileChooser = new FileChooser();
-		final Button openButton = new Button("Open a Picture...");
 
-		openButton.setOnAction(e -> {
-			configureFileChooser(fileChooser);
-			File file = fileChooser.showOpenDialog(stage);
-			if (file != null) {
-				openFile(file);
-			}
-		});
+		mainStage.setTitle("BIOpix");
 
-		final GridPane inputGridPane = new GridPane();
+		// set bounds
+		mainStage.setX(Images.primaryScreenBounds.getMinX());
+		mainStage.setY(Images.primaryScreenBounds.getMinY());
+		mainStage.setWidth(Images.primaryScreenBounds.getWidth());
+		mainStage.setHeight(Images.primaryScreenBounds.getHeight());
 
-		GridPane.setConstraints(openButton, 0, 1);
-		inputGridPane.setHgap(6);
-		inputGridPane.setVgap(6);
-		inputGridPane.getChildren().add(openButton);
+		// create loading image Scene
+		FlowPane fileChooseRoot = new FlowPane();
+		fileChooseRoot.setStyle("-fx-background: #101010;");
+		fileChooseRoot.setAlignment(Pos.CENTER);
+		
+		fileChooseRoot.getChildren().add(Images.upload);
+		Scene mainScene = new Scene(fileChooseRoot, Images.primaryScreenBounds.getWidth(),
+				Images.primaryScreenBounds.getHeight());
+		mainScene.setFill(Color.web("0x101010"));
+		mainStage.setScene(mainScene);
 
-		final Pane rootGroup = new VBox(12);
-		rootGroup.getChildren().addAll(inputGridPane);
-		rootGroup.setPadding(new Insets(12, 12, 12, 12));
-		rootGroup.setStyle("-fx-background: #101010;");
+		// create main Root
+		Pane mainRoot = new Pane();
+		mainRoot.setLayoutX(0);
+		mainRoot.setLayoutY(0);
+		mainRoot.setStyle("-fx-background: #101010;");
+		mainRoot.setMinWidth(Images.primaryScreenBounds.getWidth());
+		mainRoot.setMinHeight(Images.primaryScreenBounds.getHeight());
 
-		stage.setScene(new Scene(rootGroup));
-		stage.show();
-		stage.setOnCloseRequest(e -> {
+		// Tools root set up
+		toolsPane = new Pane();
+		toolsPane.setMinWidth(Images.primaryScreenBounds.getWidth());
+		toolsPane.setMinHeight(Images.primaryScreenBounds.getHeight());
+
+		grid = new GridTool();
+		angle = new AngleDrawingTool();
+		line = new LineDrawingTool();
+		mainRoot.getChildren().add(toolsPane);
+		toolsPane.setLayoutX(0 - toolsPane.getLayoutBounds().getMinX());
+		toolsPane.setLayoutY(0 - toolsPane.getLayoutBounds().getMinY());
+
+		toolsPane.getChildren().addAll(line.getLine(),angle.getAngle(),grid.getCanvas());
+		mainStage.show();
+		mainStage.setOnCloseRequest(e -> {
 			Platform.exit();
 			System.exit(0);
 		});
-		buttons();
+
+		buildTools();
+
+		// File Choose set up
+		fileChooseRoot.setOnMouseClicked(e -> {
+			configureFileChooser(fileChooser);
+			File file = fileChooser.showOpenDialog(mainStage);
+			if (file != null) {
+				picture = new ImageView(new Image("file:" + file.getPath()));
+
+				mainRoot.getChildren().add(picture);
+				toolsPane.toFront();
+				picture.setPreserveRatio(true);
+				picture.setFitWidth(Images.primaryScreenBounds.getWidth());
+				picture.setFitHeight(Images.primaryScreenBounds.getHeight());
+				picture.autosize();
+
+				picture.setLayoutX((mainRoot.getMinWidth() / 2) - (picture.getBoundsInParent().getWidth() / 2));
+				picture.setLayoutY((mainRoot.getMinHeight() / 2) - (picture.getBoundsInParent().getHeight() / 2));
+				mainScene.setRoot(mainRoot);
+				toolsStage.getStage().show();
+			}
+		});
 	}
 
-	public void main(String[] args) {
+	public static void main(String[] args) {
 		launch(args);
 	}
 
-	private void buttons() {
-		Stage buttonStage = new Stage();
-
-		buttonStage.setAlwaysOnTop(true);
-		buttonStage.setTitle("Tools");
-		buttonStage.setX(0);
-		buttonStage.setY(Screen.getPrimary().getVisualBounds().getHeight() - 27);
-		buttonStage.initStyle(StageStyle.UNDECORATED);
-
-		FlowPane root = new FlowPane(Orientation.HORIZONTAL);
-		root.setStyle("-fx-background: #343434;");
-		root.setAlignment(Pos.TOP_LEFT);
-
-		Button grid = new Button(); // 0
-		Button draw = new Button(); // 1
-		Button line = new Button(); // 2
-		Button angle = new Button(); // 3
-
-		// grid button ID 0
-		grid.setGraphic(Images.grid);
-		grid.setStyle(Images.style);
-		grid.setOnMouseEntered(me -> {
-			if (selected != 0)
-				grid.setGraphic(Images.gridMO);
-		});
-		grid.setOnMouseExited(me -> {
-			if (selected != 0)
-				grid.setGraphic(Images.grid);
-		});
-		grid.setOnMouseClicked(me -> {
-			grid.setGraphic(Images.gridSel);
-			draw.setGraphic(Images.draw);
-			line.setGraphic(Images.line);
-			angle.setGraphic(Images.angle);
-			selected = 0;
-		});
-
-		// draw button ID 1
-		draw.setGraphic(Images.draw);
-		draw.setStyle(Images.style);
-		draw.setOnMouseEntered(me -> {
-			if (selected != 1)
-				draw.setGraphic(Images.drawMO);
-		});
-		draw.setOnMouseExited(me -> {
-			if (selected != 1)
-				draw.setGraphic(Images.draw);
-		});
-		draw.setOnMouseClicked(me -> {
-			grid.setGraphic(Images.grid);
-			draw.setGraphic(Images.drawSel);
-			line.setGraphic(Images.line);
-			angle.setGraphic(Images.angle);
-			selected = 1;
-		});
-
-		// line button ID 2
-		line.setGraphic(Images.line);
-		line.setStyle(Images.style);
-		line.setOnMouseEntered(me -> {
-			if (selected != 2)
-				line.setGraphic(Images.lineMO);
-		});
-		line.setOnMouseExited(me -> {
-			if (selected != 2)
-				line.setGraphic(Images.line);
-		});
-		line.setOnMouseClicked(me -> {
-			grid.setGraphic(Images.grid);
-			draw.setGraphic(Images.draw);
-			line.setGraphic(Images.lineSel);
-			angle.setGraphic(Images.angle);
-			selected = 2;
-		});
-
-		// angle button ID 3
-		angle.setGraphic(Images.angle);
-		angle.setStyle(Images.style);
-		angle.setOnMouseEntered(me -> {
-			if (selected != 3)
-				angle.setGraphic(Images.angleMO);
-		});
-		angle.setOnMouseExited(me -> {
-			if (selected != 3)
-				angle.setGraphic(Images.angle);
-		});
-		angle.setOnMouseClicked(me -> {
-			grid.setGraphic(Images.grid);
-			draw.setGraphic(Images.draw);
-			line.setGraphic(Images.line);
-			angle.setGraphic(Images.angleSel);
-			selected = 3;
-		});
-
-		root.getChildren().addAll(grid, draw, line, angle);
-
-		buttonStage.setScene(new Scene(root));
-		buttonStage.show();
+	private void buildTools() {
+		toolsStage = new ToolsStage(this);
 	}
 
 	private static void configureFileChooser(final FileChooser fileChooser) {
 		fileChooser.setTitle("View Pictures");
 		fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
-		fileChooser.getExtensionFilters().addAll(
-				// new FileChooser.ExtensionFilter("All Images", "*.*"),
-				new FileChooser.ExtensionFilter("JPG", "*.jpg"), new FileChooser.ExtensionFilter("PNG", "*.png"));
+		fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("PNG", "*.png"),
+				new FileChooser.ExtensionFilter("JPG", "*.jpg"));
 	}
 
-	private void openFile(File file) {
-		try {
-			desktop.open(file);
-		} catch (IOException ex) {
-			Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-		}
-	}
 }
