@@ -26,6 +26,7 @@ public class Images {
 	static final ImageView grid = new ImageView(new Image("/buttons/grid.png", 40, 40, true, true));
 	static final ImageView gridSel = new ImageView(new Image("/buttons/gridSel.png", 40, 40, true, true));
 	static final ImageView gridMO = new ImageView(new Image("/buttons/gridMO.png", 40, 40, true, true));
+	static final ImageView gridLoc = new ImageView(new Image("/buttons/gridLoc.png", 40, 40, true, true));
 	
 	static final ImageView drag = new ImageView(new Image("/buttons/drag.png", 40, 40, true, true));
 	
