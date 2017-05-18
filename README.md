@@ -1,3 +1,3 @@
-# DRAMZ Group Computer Science CPT
+# D-RAMZ Group Computer Science CPT
 
-Movement App
+BIOpix
