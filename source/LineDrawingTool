@@ -1,78 +1,96 @@
 package movement;
 
 /**
- * @version 1.2.1
+ * @version 2.0
  */
 
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
+import javafx.scene.layout.Pane;
+import javafx.scene.shape.*;
 
-public class LineDrawingTool extends JComponent {
+public class LineDrawingTool {
 
-	private static final long serialVersionUID = 1L;
-	private Image image;
-	private Graphics2D g2;
+	private Pane root;
+	private Line line = new Line();
+	
+	private double lineWid = 2;
+
 	private Pair current = new Pair();
 	private Pair first = new Pair();
 	private Pair second = new Pair();
-	private boolean load = true;
 
-	public LineDrawingTool() {
-		setDoubleBuffered(false);
-		addMouseListener(new MouseAdapter() {
-			public void mousePressed(MouseEvent e) {
-				first.setBoth(e.getX(),e.getY());
-			}
-		});
-
-		addMouseMotionListener(new MouseMotionAdapter() {
-			public void mouseDragged(MouseEvent e) {
-				clear();
-				current.setBoth(e.getX(), e.getY());
-				g2.drawLine(first.getX(), first.getY(), current.getX(), current.getY());
-
-			}
-		});
-
-		addMouseListener(new MouseAdapter() {
-			public void mouseReleased(MouseEvent e) {
-				second.setBoth(current.getX(), current.getY());
-				g2.drawLine(first.getX(), first.getY(), second.getX(), second.getY());
-			}
-		});
-
+	LineDrawingTool()
+	{
+		initialize();
 	}
+	
+	private void initialize() {
+		
+		root = new Pane();
+		root.setMinWidth(Images.primaryScreenBounds.getWidth());
+		root.setMinHeight(Images.primaryScreenBounds.getHeight());
+		root.setLayoutX(0-root.getLayoutBounds().getMinX());
+		root.setLayoutY(0-root.getLayoutBounds().getMinY());
 
-	protected void paintComponent(Graphics g) {
-		if (image == null) {
-			image = createImage(getSize().width, getSize().height);
-			g2 = (Graphics2D) image.getGraphics();
-			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			line.setStroke(ToolsStage.colour);
+			line.setSmooth(true);
+			line.setStrokeWidth(lineWid);
+			root.getChildren().add(line);
+		
+	}
+	
+	public void enable() {
+		root.setOnMousePressed(mp -> first.setBoth(mp.getSceneX(), mp.getSceneY()));
 
+		root.setOnMouseDragged(md -> {
+
+			line.setStroke(ToolsStage.colour);
 			clear();
-		}
-		g.drawImage(image, 0, 0, null);
+			current.setBoth(md.getSceneX(), md.getSceneY());
+				line.setStartX(first.getX());
+				line.setStartY(first.getY());
+				line.setEndX(current.getX());
+				line.setEndY(current.getY());
+				
+		});
 
-		if (load) {
-			g2.drawLine(first.getX(), first.getY(), second.getX(), second.getY());
-			load = false;
-		}
+		root.setOnMouseReleased(mr -> {
+				second.setBoth(mr.getSceneX(), mr.getSceneY());
+				line.setStartX(first.getX());
+				line.setStartY(first.getY());
+				line.setEndX(second.getX());
+				line.setEndY(second.getY());
+
+				disable();
+			
+		});
+	}
+	
+	public void disable() {
+		root.setOnMousePressed(null);
+		root.setOnMouseDragged(null);
+		root.setOnMouseReleased(null);
 	}
 
-	// clear canvas (sets canvas white -> subject to change)
-	public void clear() {
-		g2.setPaint(Color.white);
-		// draw white on entire draw area to clear
-		g2.fillRect(0, 0, getSize().width, getSize().height);
-		g2.setPaint(Color.black);
-		repaint();
+	private void clear() {
+		line.setStartX(-1);
+		line.setStartY(-1);
+		line.setEndX(-1);
+		line.setEndY(-1);
 	}
 
-	public void loadLine(Pair first, Pair second) {
+	void loadAngle(Pair first, Pair second, Pair third) {
 		this.first = first;
 		this.second = second;
-		load = true;
+
+		line.setStartX(first.getX());
+		line.setStartY(first.getY());
+		line.setEndX(second.getX());
+		line.setEndY(second.getY());
+
+	}
+
+	public Pane getLine() {
+		return root;
 	}
 
 }
