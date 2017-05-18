@@ -1,97 +1,168 @@
 package movement;
 
 /**
- * @version 1.1.0
+ * @version 2.1
  */
 
-import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.*;
 
-public class AngleDrawingTool extends JComponent {
+public class AngleDrawingTool {
 
-	private static final long serialVersionUID = 1L;
-	private Image image;
-	private Graphics2D g2;
+	private Pane root;
+	private Line[] lines = { new Line(), new Line() };
+	private Circle[] circles = { new Circle(), new Circle(), new Circle() };
+
+	private double lineWid = 2;
+	private Color circCol = new Color(1, 1, 0, 0.6);
+	private double circRad = 12;
+
 	private Pair current = new Pair();
 	private Pair first = new Pair();
 	private Pair second = new Pair();
 	private Pair third = new Pair();
+
 	AngleCalculator angler = new AngleCalculator();
+
 	boolean firstLine = true;
-	boolean load = false;
 
 	public AngleDrawingTool() {
-		setDoubleBuffered(false);
-		addMouseListener(new MouseAdapter() {
-			public void mousePressed(MouseEvent e) {
-				if (firstLine)
-					first.setBoth(e.getX(), e.getY());
-			}
-		});
 
-		addMouseMotionListener(new MouseMotionAdapter() {
-			public void mouseDragged(MouseEvent e) {
-				clear();
-				current.setBoth(e.getX(), e.getY());
-				if (firstLine)
-					g2.drawLine(first.getX(), first.getY(), current.getX(), current.getY());
-				else {
-					g2.drawLine(first.getX(), first.getY(), second.getX(), second.getY());
-					g2.drawLine(second.getX(), second.getY(), current.getX(), current.getY());
-				}
-			}
-		});
-
-		addMouseListener(new MouseAdapter() {
-			public void mouseReleased(MouseEvent e) {
-				if (firstLine) {
-					second.setBoth(current.getX(), current.getY());
-					g2.drawLine(first.getX(), first.getY(), second.getX(), second.getY());
-					firstLine = false;
-				} else {
-					third.setBoth(current.getX(), current.getY());
-					g2.drawLine(first.getX(), first.getY(), second.getX(), second.getY());
-					g2.drawLine(second.getX(), second.getY(), third.getX(), third.getY());
-					System.out.println(angler.getAngle(first, third, second));
-				}
-			}
-		});
+		initialize();
 
 	}
 
-	protected void paintComponent(Graphics g) {
-		if (image == null) {
-			image = createImage(getSize().width, getSize().height);
-			g2 = (Graphics2D) image.getGraphics();
-			g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+	private void initialize() {
+
+		root = new Pane();
+		root.setMinWidth(Images.primaryScreenBounds.getWidth());
+		root.setMinHeight(Images.primaryScreenBounds.getHeight());
+		root.setLayoutX(0 - root.getLayoutBounds().getMinX());
+		root.setLayoutY(0 - root.getLayoutBounds().getMinY());
+
+		for (int i = 0; i < lines.length; i++) {
+			lines[i].setStroke(ToolsStage.colour);
+			lines[i].setSmooth(true);
+			lines[i].setStrokeWidth(lineWid);
+			root.getChildren().add(lines[i]);
+		}
+
+		for (int i = 0; i < circles.length; i++) {
+			circles[i].setCenterX(-50);
+			circles[i].setCenterY(-50);
+			circles[i].setFill(circCol);
+			circles[i].setRadius(circRad);
+			root.getChildren().add(circles[i]);
+		}
+
+	}
+
+	public void enable() {
+		root.setOnMousePressed(mp -> {
+			lines[0].setStroke(ToolsStage.colour);
+			lines[1].setStroke(ToolsStage.colour);
+
+			if (firstLine) {
+				first.setBoth(mp.getSceneX(), mp.getSceneY());
+				circles[0].setCenterX(first.getX());
+				circles[0].setCenterY(first.getY());
+			}
+
+		});
+
+		root.setOnMouseDragged(md -> {
 
 			clear();
-		}
-		g.drawImage(image, 0, 0, null);
+			current.setBoth(md.getSceneX(), md.getSceneY());
+			if (firstLine) {
+				lines[0].setStartX(first.getX());
+				lines[0].setStartY(first.getY());
+				lines[0].setEndX(current.getX());
+				lines[0].setEndY(current.getY());
 
-		if (load) {
-			g2.drawLine(first.getX(), first.getY(), second.getX(), second.getY());
-			g2.drawLine(second.getX(), second.getY(), third.getX(), third.getY());
-			System.out.println(angler.getAngle(first, third, second));
-			load = false;
-		}
+			} else {
+				lines[0].setStartX(first.getX());
+				lines[0].setStartY(first.getY());
+				lines[0].setEndX(second.getX());
+				lines[0].setEndY(second.getY());
+
+				lines[1].setStartX(second.getX());
+				lines[1].setStartY(second.getY());
+				lines[1].setEndX(current.getX());
+				lines[1].setEndY(current.getY());
+			}
+		});
+
+		root.setOnMouseReleased(mr -> {
+			if (firstLine) {
+				second.setBoth(mr.getSceneX(), mr.getSceneY());
+				lines[0].setStartX(first.getX());
+				lines[0].setStartY(first.getY());
+				lines[0].setEndX(second.getX());
+				lines[0].setEndY(second.getY());
+
+				circles[1].setCenterX(second.getX());
+				circles[1].setCenterY(second.getY());
+
+				firstLine = false;
+			} else {
+				third.setBoth(mr.getSceneX(), mr.getSceneY());
+				lines[0].setStartX(first.getX());
+				lines[0].setStartY(first.getY());
+				lines[0].setEndX(second.getX());
+				lines[0].setEndY(second.getY());
+
+				lines[1].setStartX(second.getX());
+				lines[1].setStartY(second.getY());
+				lines[1].setEndX(third.getX());
+				lines[1].setEndY(third.getY());
+
+				circles[2].setCenterX(third.getX());
+				circles[2].setCenterY(third.getY());
+
+				System.out.println(angler.getAngle(first, third, second));
+				disable();
+			}
+		});
 	}
 
-	// clear canvas (sets canvas white [subject to change])
-	public void clear() {
-		g2.setPaint(Color.white);
-		// draw white on entire draw area to clear
-		g2.fillRect(0, 0, getSize().width, getSize().height);
-		g2.setPaint(Color.black);
-		repaint();
+	public void disable() {
+		root.setOnMousePressed(null);
+		root.setOnMouseDragged(null);
+		root.setOnMouseReleased(null);
 	}
 
-	public void loadAngle(Pair first, Pair second, Pair third) {
+	private void clear() {
+		lines[0].setStartX(-1);
+		lines[0].setStartY(-1);
+		lines[0].setEndX(-1);
+		lines[0].setEndY(-1);
+
+		lines[1].setStartX(-1);
+		lines[1].setStartY(-1);
+		lines[1].setEndX(-1);
+		lines[1].setEndY(-1);
+	}
+
+	void load(Pair first, Pair second, Pair third) {
 		this.first = first;
 		this.second = second;
 		this.third = third;
-		load = true;
+		lines[0].setStartX(first.getX());
+		lines[0].setStartY(first.getY());
+		lines[0].setEndX(second.getX());
+		lines[0].setEndY(second.getY());
+
+		lines[1].setStartX(second.getX());
+		lines[1].setStartY(second.getY());
+		lines[1].setEndX(third.getX());
+		lines[1].setEndY(third.getY());
+		System.out.println(angler.getAngle(first, third, second));
+	}
+
+	public Pane getAngle() {
+		return root;
 	}
 
 }
