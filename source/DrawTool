@@ -1,21 +1,21 @@
 package movement;
 
 /**
-  * @version 1.0
-  */
+ * @version 1.1
+ */
+
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 
-public class DrawTool {
+public class DrawTool extends Layer {
 
 	GraphicsContext gc;
 	Canvas canvas = new Canvas(Images.primaryScreenBounds.getWidth(),Images.primaryScreenBounds.getHeight());
 	static double drawWid = 2;
-	private Layer node;
 	
-	DrawTool(Layer node)
+	DrawTool()
 	{
-		this.node = node;
+		super(1);
 		gc = canvas.getGraphicsContext2D();
 		gc.setLineWidth(drawWid);
 	}
@@ -24,7 +24,7 @@ public class DrawTool {
 	{
 		gc.setStroke(ToolsStage.colour);
 		canvas.setOnMousePressed(e-> {
-			node.blank = false;
+			super.blank = false;
 			gc.beginPath();
 			gc.moveTo(e.getSceneX(), e.getSceneY());
 			gc.stroke();
@@ -42,14 +42,13 @@ public class DrawTool {
 		canvas.setOnMouseDragged(null);
 	}
 	
-	public void update()
+	public void redraw()
 	{
 		gc.setLineWidth(drawWid);
 		gc.setStroke(ToolsStage.colour);
-	
 	}
 	
-	public Canvas getCanvas()
+	public Canvas getNode()
 	{
 		return canvas;
 	}
