@@ -1,18 +1,21 @@
 package movement;
 
 /**
- * @version 2.1
+ * @version 2.2
  */
 
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.*;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 
 public class AngleDrawingTool {
 
 	private Pane root;
 	private Line[] lines = { new Line(), new Line() };
 	private Circle[] circles = { new Circle(), new Circle(), new Circle() };
+	private Text text = new Text();
 
 	private double lineWid = 2;
 	private Color circCol = new Color(1, 1, 0, 0.6);
@@ -24,11 +27,14 @@ public class AngleDrawingTool {
 	private Pair third = new Pair();
 
 	AngleCalculator angler = new AngleCalculator();
+	private double angle = 0;
+	Layer node;
 
 	boolean firstLine = true;
 
-	public AngleDrawingTool() {
+	public AngleDrawingTool(Layer node) {
 
+		this.node = node;
 		initialize();
 
 	}
@@ -40,6 +46,8 @@ public class AngleDrawingTool {
 		root.setMinHeight(Images.primaryScreenBounds.getHeight());
 		root.setLayoutX(0 - root.getLayoutBounds().getMinX());
 		root.setLayoutY(0 - root.getLayoutBounds().getMinY());
+
+		root.getChildren().add(text);
 
 		for (int i = 0; i < lines.length; i++) {
 			lines[i].setStroke(ToolsStage.colour);
@@ -57,9 +65,10 @@ public class AngleDrawingTool {
 		}
 
 	}
-
+	
 	public void enable() {
 		root.setOnMousePressed(mp -> {
+			node.blank = false;
 			lines[0].setStroke(ToolsStage.colour);
 			lines[1].setStroke(ToolsStage.colour);
 
@@ -121,7 +130,8 @@ public class AngleDrawingTool {
 				circles[2].setCenterX(third.getX());
 				circles[2].setCenterY(third.getY());
 
-				System.out.println(angler.getAngle(first, third, second));
+				angle = angler.getAngle(first, third, second);
+				setText();
 				disable();
 			}
 		});
@@ -131,6 +141,111 @@ public class AngleDrawingTool {
 		root.setOnMousePressed(null);
 		root.setOnMouseDragged(null);
 		root.setOnMouseReleased(null);
+	}
+	
+	public void redraw()
+	{
+		for (int i = 0; i < lines.length; i++) {
+			lines[i].setStroke(ToolsStage.colour);
+			lines[i].setStrokeWidth(lineWid);
+		}
+
+		for (int i = 0; i < circles.length; i++) {
+			circles[i].setFill(circCol);
+			circles[i].setRadius(circRad);
+		}
+		
+		text.setFill(ToolsStage.colour);
+	}
+
+	private void setText() {
+
+		// 4 MAIN DIRECTIONS //
+		if (first.getX() > second.getX() && third.getX() > second.getX()) {
+			// draw right
+			text.setLayoutX(second.getX() - 60);
+			if (angle > 100)
+				text.setLayoutX(second.getX() - 75);
+			text.setLayoutY(second.getY() + 7);
+		} else if (first.getX() < second.getX() && third.getX() < second.getX()) {
+			// draw left
+			text.setLayoutX(second.getX() + 17);
+			text.setLayoutY(second.getY() + 7);
+		} else if (first.getY() > second.getY() && third.getY() > second.getY()) {
+			// draw up
+			text.setLayoutX(second.getX() - 20);
+			if (angle > 100)
+				text.setLayoutX(second.getX() - 40);
+			text.setLayoutY(second.getY() - 25);
+		} else if (first.getY() < second.getY() && third.getY() < second.getY()) {
+			// draw down
+			text.setLayoutX(second.getX() - 20);
+			if (angle > 100)
+				text.setLayoutX(second.getX() - 35);
+			text.setLayoutY(second.getY() + 35);
+		}
+
+		// DIAGONALS //
+		else if (first.getX() < second.getX() && third.getX() > second.getX()) {
+			// left to right
+			Pair secLeft = new Pair(second.getX() - 5, second.getY());
+			Pair secRight = new Pair(second.getX() + 5, second.getY());
+			
+			if (first.getY() > second.getY()) { // bottom to top
+				if (angler.getAngle(first, secLeft, second) > angler.getAngle(third, secRight, second)) {
+					// draw top left
+					text.setLayoutX(second.getX() - 75);
+					text.setLayoutY(second.getY() - 15);
+				} else {
+					// draw bottom right
+					text.setLayoutX(second.getX() + 15);
+					text.setLayoutY(second.getY() + 15);
+				}
+			} else { // top to bottom
+				if (angler.getAngle(first, secLeft, second) > angler.getAngle(third, secRight, second)) {
+					// draw bottom left
+					text.setLayoutX(second.getX() - 75);
+					text.setLayoutY(second.getY() + 15);
+				} else {
+					// draw top right
+					text.setLayoutX(second.getX() + 15);
+					text.setLayoutY(second.getY() - 15);
+				}
+			}
+		} else if (first.getX() > second.getX() && third.getX() < second.getX()) {
+			// right to left
+			Pair secLeft = new Pair(second.getX() - 5, second.getY());
+			Pair secRight = new Pair(second.getX() + 5, second.getY());
+			
+			if (first.getY() > second.getY()) { // bottom to top
+				if(angler.getAngle(first, secRight, second) > angler.getAngle(third, secLeft, second)) {
+					// draw top right
+					text.setLayoutX(second.getX() + 15);
+					text.setLayoutY(second.getY() - 15);
+				} else {
+					// draw bottom left
+					text.setLayoutX(second.getX() - 75);
+					text.setLayoutY(second.getY() + 15);
+				}
+			} else { // top to bottom
+				if(angler.getAngle(first, secRight, second) > angler.getAngle(third, secLeft, second)) {
+					// draw bottom right
+					text.setLayoutX(second.getX() + 15);
+					text.setLayoutY(second.getY() + 15);
+				} else {
+					// draw top left
+					text.setLayoutX(second.getX() - 75);
+					text.setLayoutY(second.getY() - 15);
+				}
+			}
+		}
+
+		text.setStroke(Color.BLACK);
+		text.setStrokeWidth(0.2);
+		text.setFill(ToolsStage.colour);
+		text.setText(String.valueOf(angle));
+		text.setFont(Font.font("Verdana", 20));
+
 	}
 
 	private void clear() {
@@ -158,7 +273,7 @@ public class AngleDrawingTool {
 		lines[1].setStartY(second.getY());
 		lines[1].setEndX(third.getX());
 		lines[1].setEndY(third.getY());
-		System.out.println(angler.getAngle(first, third, second));
+		angle = angler.getAngle(first, third, second);
 	}
 
 	public Pane getAngle() {
