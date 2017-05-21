@@ -1,7 +1,7 @@
 package movement;
 
 /**
- * @version 2.1
+ * @version 2.2
  */
 
 import javafx.geometry.Orientation;
@@ -20,15 +20,13 @@ public class ToolsStage {
 	private Stage toolsStage = new Stage();
 	static int selected = -1;
 	private static double initialX, initialY;
-	private static boolean dragging = false;
 	private static boolean disableDrag = true;
 	private MainWindow main;
 
-	ToolsStage(MainWindow main)
-	{
+	ToolsStage(MainWindow main) {
 		this.main = main;
 	}
-	
+
 	public Stage getStage() {
 
 		toolsStage.setAlwaysOnTop(true);
@@ -52,24 +50,25 @@ public class ToolsStage {
 		grid.setGraphic(Images.grid);
 		grid.setStyle(Images.style);
 		grid.setOnMouseEntered(me -> {
-			if (selected != 0)
-			{
-				if(!GridTool.locked)
+			if (selected != 0) {
+				if (!GridTool.locked)
 					grid.setGraphic(Images.gridMO);
 			}
-				
+
 		});
 		grid.setOnMouseExited(me -> {
-			if (selected != 0)
-			{
-				if(!GridTool.locked)
+			if (selected != 0) {
+				if (!GridTool.locked)
 					grid.setGraphic(Images.grid);
 			}
 		});
 		grid.setOnMouseClicked(me -> {
+			if (main.layers.tail.blank) {
+				main.layers.deleteTail();
+				main.toolsPane.getChildren().remove(main.toolsPane.getChildren().size() - 1);
+			}
 			if (selected != 0) {
-				if(!GridTool.locked)
-				{
+				if (!GridTool.locked) {
 					grid.setGraphic(Images.gridSel);
 					main.grid.paintGrid();
 				}
@@ -77,17 +76,14 @@ public class ToolsStage {
 				line.setGraphic(Images.line);
 				angle.setGraphic(Images.angle);
 				//
-				
+
 				selected = 0;
-				
+
 			} else {
-				if(GridTool.locked)
-				{
+				if (GridTool.locked) {
 					GridTool.locked = false;
 					grid.setGraphic(Images.gridSel);
-				}
-				else
-				{
+				} else {
 					GridTool.locked = true;
 					grid.setGraphic(Images.gridLoc);
 				}
@@ -106,15 +102,31 @@ public class ToolsStage {
 				draw.setGraphic(Images.draw);
 		});
 		draw.setOnMouseClicked(me -> {
+			if (main.layers.tail != null) {
+				if (main.layers.tail.blank) {
+					main.layers.deleteTail();
+					main.toolsPane.getChildren().remove(main.toolsPane.getChildren().size() - 1);
+				} else
+					main.layers.tail.disable();
+			}
 			if (selected != 1) {
-				if(!GridTool.locked)
+				if (!GridTool.locked)
 					grid.setGraphic(Images.grid);
-				main.grid.clear();
 				draw.setGraphic(Images.drawSel);
 				line.setGraphic(Images.line);
 				angle.setGraphic(Images.angle);
+
+				main.grid.clear();
 				
+				main.layers.createNew(1);
+				main.layers.tail.enable();
+				main.toolsPane.getChildren().add(main.layers.tail.getNode());
+
 				selected = 1;
+			} else {
+				main.layers.createNew(1);
+				main.layers.tail.enable();
+				main.toolsPane.getChildren().add(main.layers.tail.getNode());
 			}
 		});
 
@@ -130,19 +142,30 @@ public class ToolsStage {
 				line.setGraphic(Images.line);
 		});
 		line.setOnMouseClicked(me -> {
+			if (main.layers.tail != null) {
+				if (main.layers.tail.blank) {
+					main.layers.deleteTail();
+					main.toolsPane.getChildren().remove(main.toolsPane.getChildren().size() - 1);
+				} else 
+					main.layers.tail.disable();
+			}
 			if (selected != 2) {
-				if(!GridTool.locked)
+				if (!GridTool.locked)
 					grid.setGraphic(Images.grid);
 				draw.setGraphic(Images.draw);
 				line.setGraphic(Images.lineSel);
 				angle.setGraphic(Images.angle);
-				//
+
 				main.grid.clear();
-				main.line.getLine().toFront();
-				main.line.enable();
-				main.angle.disable();
-				
+				main.layers.createNew(2);
+				main.layers.tail.enable();
+				main.toolsPane.getChildren().add(main.layers.tail.getNode());
+
 				selected = 2;
+			} else {
+				main.layers.createNew(2);
+				main.layers.tail.enable();
+				main.toolsPane.getChildren().add(main.layers.tail.getNode());
 			}
 		});
 
@@ -158,49 +181,61 @@ public class ToolsStage {
 				angle.setGraphic(Images.angle);
 		});
 		angle.setOnMouseClicked(me -> {
+			if (main.layers.tail != null) {
+				if (main.layers.tail.blank) {
+					main.layers.deleteTail();
+					main.toolsPane.getChildren().remove(main.toolsPane.getChildren().size() - 1);
+				} else
+					main.layers.tail.disable();
+			}
 			if (selected != 3) {
-				if(!GridTool.locked)
+				if (!GridTool.locked)
 					grid.setGraphic(Images.grid);
 				draw.setGraphic(Images.draw);
 				line.setGraphic(Images.line);
 				angle.setGraphic(Images.angleSel);
-				//
+
 				main.grid.clear();
-				main.angle.getAngle().toFront();
-				main.angle.enable();
-				main.line.disable();
-				
+				main.layers.createNew(3);
+				main.layers.tail.enable();
+				main.toolsPane.getChildren().add(main.layers.tail.getNode());
+
 				selected = 3;
+			} else {
+				main.layers.createNew(3);
+				main.layers.tail.enable();
+				main.toolsPane.getChildren().add(main.layers.tail.getNode());
 			}
 		});
 
 		drag.setGraphic(Images.drag);
 		drag.setStyle(Images.style);
-		drag.setOnMouseDragged(md -> {
-			if (!dragging) {
-				initialX = md.getSceneX();
-				initialY = md.getSceneY();
-				dragging = true;
-			} else {
-				toolsStage.setX(toolsStage.getX() + md.getSceneX() - initialX);
-				toolsStage.setY(toolsStage.getY() + md.getSceneY() - initialY);
-			}
+		drag.setOnMousePressed(mp -> {
+			initialX = mp.getSceneX();
+			initialY = mp.getSceneY();
 		});
-		drag.setOnMouseDragReleased(md -> dragging = false);
-		
-		cp.getStyleClass().add("button");
-		cp.setStyle("-fx-color-label-visible: false;"
-				  + "-fx-background-color: null;"
-				  + "-fx-background-color: null;");
-		
-		cp.setOnAction(ea -> {
-			colour = cp.getValue();
+		drag.setOnMouseDragged(md -> {
+			toolsStage.setX(toolsStage.getX() + md.getSceneX() - initialX);
+			toolsStage.setY(toolsStage.getY() + md.getSceneY() - initialY);
 		});
 
-		if (disableDrag)
-			buttonRoot.getChildren().addAll(grid, draw, line, angle,cp);
-		else
-			buttonRoot.getChildren().addAll(grid, draw, line, angle,cp, drag);
+		cp.getStyleClass().add("button");
+		cp.setStyle("-fx-color-label-visible: false;" + "-fx-background-color: null;" + "-fx-background-color: null;");
+
+		cp.setOnAction(ea -> {
+			colour = cp.getValue();
+			if (selected == 0)
+				main.grid.paintGrid();
+			else {
+				if (main.layers.tail != null)
+					main.layers.tail.redraw();
+			}
+				
+		});
+
+		buttonRoot.getChildren().addAll(grid, draw, line, angle, cp);
+		if (!disableDrag)
+			buttonRoot.getChildren().add(drag);
 
 		toolsStage.setScene(buttonScene);
 
