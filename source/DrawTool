@@ -1,0 +1,57 @@
+package movement;
+
+/**
+  * @version 1.0
+  */
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+
+public class DrawTool {
+
+	GraphicsContext gc;
+	Canvas canvas = new Canvas(Images.primaryScreenBounds.getWidth(),Images.primaryScreenBounds.getHeight());
+	static double drawWid = 2;
+	private Layer node;
+	
+	DrawTool(Layer node)
+	{
+		this.node = node;
+		gc = canvas.getGraphicsContext2D();
+		gc.setLineWidth(drawWid);
+	}
+	
+	public void enable()
+	{
+		gc.setStroke(ToolsStage.colour);
+		canvas.setOnMousePressed(e-> {
+			node.blank = false;
+			gc.beginPath();
+			gc.moveTo(e.getSceneX(), e.getSceneY());
+			gc.stroke();
+		});
+		
+		canvas.setOnMouseDragged(e-> {
+			gc.lineTo(e.getSceneX(), e.getSceneY());
+			gc.stroke();
+		});
+	}
+	
+	public void disable()
+	{
+		canvas.setOnMousePressed(null);
+		canvas.setOnMouseDragged(null);
+	}
+	
+	public void update()
+	{
+		gc.setLineWidth(drawWid);
+		gc.setStroke(ToolsStage.colour);
+	
+	}
+	
+	public Canvas getCanvas()
+	{
+		return canvas;
+	}
+	
+}
