@@ -11,17 +11,16 @@ import javafx.scene.paint.Color;
 import javafx.stage.*;
 
 /**
- * @version 1.3
+ * @version 1.5
  */
 
 public class MainWindow extends Application {
 
 	static ImageView picture;
 	ToolsStage toolsStage;
-	AngleDrawingTool angle;
-	LineDrawingTool line;
-	GridTool grid;
 	Pane toolsPane;
+	GridTool grid = new GridTool();
+	Layers layers = new Layers();
 
 	public void start(Stage mainStage) {
 		final FileChooser fileChooser = new FileChooser();
@@ -57,15 +56,12 @@ public class MainWindow extends Application {
 		toolsPane = new Pane();
 		toolsPane.setMinWidth(Images.primaryScreenBounds.getWidth());
 		toolsPane.setMinHeight(Images.primaryScreenBounds.getHeight());
+		toolsPane.getChildren().add(grid.getCanvas());
 
-		grid = new GridTool();
-		angle = new AngleDrawingTool();
-		line = new LineDrawingTool();
 		mainRoot.getChildren().add(toolsPane);
 		toolsPane.setLayoutX(0 - toolsPane.getLayoutBounds().getMinX());
 		toolsPane.setLayoutY(0 - toolsPane.getLayoutBounds().getMinY());
 
-		toolsPane.getChildren().addAll(line.getLine(),angle.getAngle(),grid.getCanvas());
 		mainStage.show();
 		mainStage.setOnCloseRequest(e -> {
 			Platform.exit();
@@ -73,6 +69,11 @@ public class MainWindow extends Application {
 		});
 
 		buildTools();
+		
+		/////////////////////////////
+		//mainScene.setRoot(mainRoot);
+		//toolsStage.getStage().show();
+		/////////////////////////////
 
 		// File Choose set up
 		fileChooseRoot.setOnMouseClicked(e -> {
