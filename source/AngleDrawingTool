@@ -1,7 +1,7 @@
 package movement;
 
 /**
- * @version 2.2
+ * @version 2.3
  */
 
 import javafx.scene.layout.Pane;
@@ -10,7 +10,7 @@ import javafx.scene.shape.*;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
-public class AngleDrawingTool {
+public class AngleDrawingTool extends Layer{
 
 	private Pane root;
 	private Line[] lines = { new Line(), new Line() };
@@ -28,13 +28,13 @@ public class AngleDrawingTool {
 
 	AngleCalculator angler = new AngleCalculator();
 	private double angle = 0;
-	Layer node;
 
 	boolean firstLine = true;
 
-	public AngleDrawingTool(Layer node) {
+	public AngleDrawingTool() {
+		
+		super(3);
 
-		this.node = node;
 		initialize();
 
 	}
@@ -68,7 +68,7 @@ public class AngleDrawingTool {
 	
 	public void enable() {
 		root.setOnMousePressed(mp -> {
-			node.blank = false;
+			super.blank = false;
 			lines[0].setStroke(ToolsStage.colour);
 			lines[1].setStroke(ToolsStage.colour);
 
@@ -276,7 +276,7 @@ public class AngleDrawingTool {
 		angle = angler.getAngle(first, third, second);
 	}
 
-	public Pane getAngle() {
+	public Pane getNode() {
 		return root;
 	}
 
