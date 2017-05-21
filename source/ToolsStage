@@ -1,7 +1,7 @@
 package movement;
 
 /**
- * @version 2.2.1
+ * @version 2.2.2
  */
 
 import javafx.geometry.Orientation;
@@ -121,13 +121,13 @@ public class ToolsStage {
 
 				main.grid.clear();
 				
-				main.layers.createNew(1);
+				main.layers.newDraw();
 				main.layers.tail.enable();
 				main.toolsPane.getChildren().add(main.layers.tail.getNode());
 
 				selected = 1;
 			} else {
-				main.layers.createNew(1);
+				main.layers.newDraw();
 				main.layers.tail.enable();
 				main.toolsPane.getChildren().add(main.layers.tail.getNode());
 			}
@@ -160,13 +160,13 @@ public class ToolsStage {
 				angle.setGraphic(Images.angle);
 
 				main.grid.clear();
-				main.layers.createNew(2);
+				main.layers.newLine();
 				main.layers.tail.enable();
 				main.toolsPane.getChildren().add(main.layers.tail.getNode());
 
 				selected = 2;
 			} else {
-				main.layers.createNew(2);
+				main.layers.newLine();
 				main.layers.tail.enable();
 				main.toolsPane.getChildren().add(main.layers.tail.getNode());
 			}
@@ -199,13 +199,13 @@ public class ToolsStage {
 				angle.setGraphic(Images.angleSel);
 
 				main.grid.clear();
-				main.layers.createNew(3);
+				main.layers.newAngle();
 				main.layers.tail.enable();
 				main.toolsPane.getChildren().add(main.layers.tail.getNode());
 
 				selected = 3;
 			} else {
-				main.layers.createNew(3);
+				main.layers.newAngle();
 				main.layers.tail.enable();
 				main.toolsPane.getChildren().add(main.layers.tail.getNode());
 			}
