@@ -1,13 +1,13 @@
 package movement;
 
 /**
- * @version 2.1
+ * @version 2.2
  */
 
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.*;
 
-public class LineDrawingTool {
+public class LineDrawingTool extends Layer {
 
 	private Pane root;
 	private Line line = new Line();
@@ -18,10 +18,9 @@ public class LineDrawingTool {
 	private Pair first = new Pair();
 	private Pair second = new Pair();
 	
-	Layer node;
-
-	LineDrawingTool(Layer node) {
-		this.node = node;
+	LineDrawingTool() {
+		
+		super(2);
 		initialize();
 	}
 
@@ -42,7 +41,7 @@ public class LineDrawingTool {
 
 	public void enable() {
 		root.setOnMousePressed(mp -> {
-			node.blank = false;
+			super.blank = false;
 			first.setBoth(mp.getSceneX(), mp.getSceneY());
 		});
 
@@ -105,7 +104,7 @@ public class LineDrawingTool {
 
 	}
 
-	public Pane getLine() {
+	public Pane getNode() {
 		return root;
 	}
 
