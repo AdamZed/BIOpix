@@ -1,126 +1,47 @@
 package movement;
 
 /**
-  * @version 1.0.1
+  * @version 1.1
   */
   
-import javafx.scene.Node;
-
-class Layer
-{
-	Layer next,prev;
-	int type;
-	
-	DrawTool draw; // TYPE 1
-	LineDrawingTool line; // TYPE 2
-	AngleDrawingTool angle; // TYPE 3
-	String name = "";
-	boolean blank = true;
-	
-	Layer(int type)
-	{
-		this.type = type;
-		if(type == 1)
-		{
-			draw = new DrawTool(this);
-			name = "Draw";
-		}
-		else if (type == 2)
-		{
-			line = new LineDrawingTool(this);
-			name = "Line";
-		}
-		else if (type == 3)
-		{
-			angle = new AngleDrawingTool(this);
-			name = "Angle";
-		}
-	}
-	
-	public void enable()
-	{
-			if(type == 1)
-			{
-				draw.enable();
-			}
-			else if (type == 2)
-			{
-				line.enable();
-			}
-			else if (type == 3)
-			{
-				angle.enable();
-			}
-	}
-	public void disable()
-	{
-		if(type == 1)
-		{
-			draw.disable();
-		}
-		else if (type == 2)
-		{
-			line.disable();
-		}
-		else if (type == 3)
-		{
-			angle.disable();
-		}
-	}
-	
-	public void redraw()
-	{
-		if(type == 1)
-		{
-			draw.update();
-		}
-		else if (type == 2)
-		{
-			line.redraw();
-		}
-		else if (type == 3)
-		{
-			angle.redraw();
-		}
-	}
-	
-	public Node getNode()
-	{
-		if(type == 1)
-		{
-			return draw.getCanvas();
-		}
-		else if (type == 2)
-		{
-			return line.getLine();
-		}
-		else if (type == 3)
-		{
-			return angle.getAngle();
-		} else
-			return null;
-	}
-}
-
 public class Layers {
 
 	Layer head = null, tail = null;
 	
-	public void createNew(int type)
+	public void newAngle()
 	{
 		if(head == null)
 		{
-			head = tail = new Layer(type);
+			head = tail = new AngleDrawingTool();
 		} else {
-			tail.next = new Layer(type);
+			tail.next = new AngleDrawingTool();
 			tail.next.prev = tail;
 			tail = tail.next;
 		}
 	}
 	
-	public void delete(int layerNum)
+	public void newLine()
 	{
-		
+		if(head == null)
+		{
+			head = tail = new DrawTool();
+		} else {
+			tail.next = new DrawTool();
+			tail.next.prev = tail;
+			tail = tail.next;
+		}
+	}
+	
+	public void newDraw()
+	{
+		if(head == null)
+		{
+			head = tail = new LineDrawingTool();
+		} else {
+			tail.next = new LineDrawingTool();
+			tail.next.prev = tail;
+			tail = tail.next;
+		}
 	}
 	
 	public void deleteTail()
@@ -133,14 +54,8 @@ public class Layers {
 		}
 	}
 	
-	public void moveUp(int layerNum)
-	{
-		
-	}
-	
-	public void moveDown(int layerNum)
-	{
-		
-	}
+	public void delete(int layerNum){}	
+	public void moveUp(int layerNum){}
+	public void moveDown(int layerNum){}
 	
 }
