@@ -1,13 +1,14 @@
 package movement;
 
 /**
- * @version 2.2.2
+ * @version 2.3
  */
 
 import javafx.geometry.Orientation;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
+import javafx.scene.control.Slider;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Screen;
@@ -17,6 +18,7 @@ import javafx.stage.StageStyle;
 public class ToolsStage {
 
 	static Color colour = Color.WHITE;
+	static double gridSize = 40, drawSize = 2;
 	private Stage toolsStage = new Stage();
 	static int selected = -1;
 	private static double initialX, initialY;
@@ -45,6 +47,24 @@ public class ToolsStage {
 		Button angle = new Button(); // 3
 		Button drag = new Button();
 		ColorPicker cp = new ColorPicker();
+		Slider sld = new Slider();
+
+		// initiate slider
+		sld.setSnapToPixel(true);
+		sld.setSnapToTicks(true);
+		sld.setShowTickMarks(true);
+		sld.setMinorTickCount(1);
+		sld.getStylesheets().add("/movement/slider_style.css");
+		sld.setOnMouseDragged(me -> {
+			if (selected == -1)
+			{ } else if (selected == 0) {
+				gridSize = sld.getValue();
+				main.grid.redraw();
+			} else {
+				drawSize = sld.getValue();
+				main.layers.tail.redraw();
+			}
+		});
 
 		// grid button ID 0
 		grid.setGraphic(Images.grid);
@@ -64,11 +84,11 @@ public class ToolsStage {
 		});
 		grid.setOnMouseClicked(me -> {
 			if (main.layers.tail != null) {
-			if (main.layers.tail.blank) {
-				main.layers.deleteTail();
-				main.toolsPane.getChildren().remove(main.toolsPane.getChildren().size() - 1);
-			} else 
-				main.layers.tail.disable();
+				if (main.layers.tail.blank) {
+					main.layers.deleteTail();
+					main.toolsPane.getChildren().remove(main.toolsPane.getChildren().size() - 1);
+				} else
+					main.layers.tail.disable();
 			}
 			if (selected != 0) {
 				if (!GridTool.locked) {
@@ -81,6 +101,7 @@ public class ToolsStage {
 				//
 
 				selected = 0;
+				updateSlider(sld);
 
 			} else {
 				if (GridTool.locked) {
@@ -91,6 +112,7 @@ public class ToolsStage {
 					grid.setGraphic(Images.gridLoc);
 				}
 			}
+			
 		});
 
 		// draw button ID 1
@@ -105,6 +127,7 @@ public class ToolsStage {
 				draw.setGraphic(Images.draw);
 		});
 		draw.setOnMouseClicked(me -> {
+			
 			if (main.layers.tail != null) {
 				if (main.layers.tail.blank) {
 					main.layers.deleteTail();
@@ -126,11 +149,14 @@ public class ToolsStage {
 				main.toolsPane.getChildren().add(main.layers.tail.getNode());
 
 				selected = 1;
+				updateSlider(sld);
+				
 			} else {
 				main.layers.newDraw();
 				main.layers.tail.enable();
 				main.toolsPane.getChildren().add(main.layers.tail.getNode());
 			}
+			
 		});
 
 		// line button ID 2
@@ -149,7 +175,7 @@ public class ToolsStage {
 				if (main.layers.tail.blank) {
 					main.layers.deleteTail();
 					main.toolsPane.getChildren().remove(main.toolsPane.getChildren().size() - 1);
-				} else 
+				} else
 					main.layers.tail.disable();
 			}
 			if (selected != 2) {
@@ -165,6 +191,7 @@ public class ToolsStage {
 				main.toolsPane.getChildren().add(main.layers.tail.getNode());
 
 				selected = 2;
+				updateSlider(sld);
 			} else {
 				main.layers.newLine();
 				main.layers.tail.enable();
@@ -184,6 +211,7 @@ public class ToolsStage {
 				angle.setGraphic(Images.angle);
 		});
 		angle.setOnMouseClicked(me -> {
+			updateSlider(sld);
 			if (main.layers.tail != null) {
 				if (main.layers.tail.blank) {
 					main.layers.deleteTail();
@@ -204,6 +232,8 @@ public class ToolsStage {
 				main.toolsPane.getChildren().add(main.layers.tail.getNode());
 
 				selected = 3;
+				updateSlider(sld);
+				
 			} else {
 				main.layers.newAngle();
 				main.layers.tail.enable();
@@ -236,12 +266,30 @@ public class ToolsStage {
 				
 		});
 
-		buttonRoot.getChildren().addAll(grid, draw, line, angle, cp);
+		buttonRoot.getChildren().addAll(grid, draw, line, angle, cp, sld);
 		if (!disableDrag)
 			buttonRoot.getChildren().add(drag);
 
 		toolsStage.setScene(buttonScene);
 
 		return toolsStage;
+	}
+	
+	private void updateSlider(Slider sld) {
+		
+		if (selected == -1)
+		{ }
+		else if (selected == 0) { // grid
+			sld.setMajorTickUnit(10);
+			sld.setMin(10);
+			sld.setMax(100);
+			sld.setValue(gridSize);
+		} else { // others
+			sld.setMin(1);
+			sld.setMajorTickUnit(1);
+			sld.setMax(10);
+			sld.setValue(drawSize);
+		}
+		
 	}
 }

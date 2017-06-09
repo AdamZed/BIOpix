@@ -1,7 +1,7 @@
 package movement;
 
 /**
- * @version 2.2
+ * @version 2.3
  */
 
 import javafx.scene.layout.Pane;
@@ -11,8 +11,6 @@ public class LineDrawingTool extends Layer {
 
 	private Pane root;
 	private Line line = new Line();
-
-	private double lineWid = 2;
 
 	private Pair current = new Pair();
 	private Pair first = new Pair();
@@ -34,7 +32,7 @@ public class LineDrawingTool extends Layer {
 
 		line.setStroke(ToolsStage.colour);
 		line.setSmooth(true);
-		line.setStrokeWidth(lineWid);
+		line.setStrokeWidth(ToolsStage.drawSize);
 		root.getChildren().add(line);
 
 	}
@@ -72,7 +70,7 @@ public class LineDrawingTool extends Layer {
 	public void redraw()
 	{
 		line.setStroke(ToolsStage.colour);
-		line.setStrokeWidth(lineWid);
+		line.setStrokeWidth(ToolsStage.drawSize);
 		
 		line.setStartX(first.getX());
 		line.setStartY(first.getY());

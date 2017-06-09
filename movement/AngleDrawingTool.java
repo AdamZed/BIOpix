@@ -1,7 +1,7 @@
 package movement;
 
 /**
- * @version 2.3
+ * @version 2.4
  */
 
 import javafx.scene.layout.Pane;
@@ -17,7 +17,6 @@ public class AngleDrawingTool extends Layer{
 	private Circle[] circles = { new Circle(), new Circle(), new Circle() };
 	private Text text = new Text();
 
-	private double lineWid = 2;
 	private Color circCol = new Color(1, 1, 0, 0.6);
 	private double circRad = 12;
 
@@ -52,7 +51,7 @@ public class AngleDrawingTool extends Layer{
 		for (int i = 0; i < lines.length; i++) {
 			lines[i].setStroke(ToolsStage.colour);
 			lines[i].setSmooth(true);
-			lines[i].setStrokeWidth(lineWid);
+			lines[i].setStrokeWidth(ToolsStage.drawSize);
 			root.getChildren().add(lines[i]);
 		}
 
@@ -147,7 +146,7 @@ public class AngleDrawingTool extends Layer{
 	{
 		for (int i = 0; i < lines.length; i++) {
 			lines[i].setStroke(ToolsStage.colour);
-			lines[i].setStrokeWidth(lineWid);
+			lines[i].setStrokeWidth(ToolsStage.drawSize);
 		}
 
 		for (int i = 0; i < circles.length; i++) {

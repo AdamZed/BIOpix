@@ -1,7 +1,7 @@
 package movement;
 
 /**
- * @version 1.1
+ * @version 1.2
  */
 
 import javafx.scene.canvas.Canvas;
@@ -11,13 +11,12 @@ public class DrawTool extends Layer {
 
 	GraphicsContext gc;
 	Canvas canvas = new Canvas(Images.primaryScreenBounds.getWidth(),Images.primaryScreenBounds.getHeight());
-	static double drawWid = 2;
 	
 	DrawTool()
 	{
 		super(1);
 		gc = canvas.getGraphicsContext2D();
-		gc.setLineWidth(drawWid);
+		gc.setLineWidth(ToolsStage.drawSize);
 	}
 	
 	public void enable()
@@ -44,7 +43,7 @@ public class DrawTool extends Layer {
 	
 	public void redraw()
 	{
-		gc.setLineWidth(drawWid);
+		gc.setLineWidth(ToolsStage.drawSize);
 		gc.setStroke(ToolsStage.colour);
 	}
 	
