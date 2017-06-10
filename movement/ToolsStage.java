@@ -1,7 +1,7 @@
 package movement;
 
 /**
- * @version 2.3
+ * @version 2.4
  */
 
 import javafx.geometry.Orientation;
@@ -36,6 +36,7 @@ public class ToolsStage {
 		toolsStage.setX(0);
 		toolsStage.setY(Screen.getPrimary().getVisualBounds().getHeight() - 27);
 		toolsStage.initStyle(StageStyle.UNDECORATED);
+		toolsStage.setWidth(425);
 
 		FlowPane buttonRoot = new FlowPane(Orientation.HORIZONTAL);
 		buttonRoot.setStyle("-fx-background: #343434;");
@@ -46,6 +47,7 @@ public class ToolsStage {
 		Button line = new Button(); // 2
 		Button angle = new Button(); // 3
 		Button drag = new Button();
+		Button save = new Button();
 		ColorPicker cp = new ColorPicker();
 		Slider sld = new Slider();
 
@@ -197,6 +199,7 @@ public class ToolsStage {
 				main.layers.tail.enable();
 				main.toolsPane.getChildren().add(main.layers.tail.getNode());
 			}
+			
 		});
 
 		// angle button ID 3
@@ -240,6 +243,13 @@ public class ToolsStage {
 				main.toolsPane.getChildren().add(main.layers.tail.getNode());
 			}
 		});
+		
+		// save button
+		save.setGraphic(Images.save);
+		save.setStyle(Images.style);
+		save.setOnMouseEntered(me -> save.setGraphic(Images.saveMO));
+		save.setOnMouseExited(me -> save.setGraphic(Images.save));
+		save.setOnMouseClicked(me -> main.savePNG(main.fileChooser, main.mainRoot));
 
 		drag.setGraphic(Images.drag);
 		drag.setStyle(Images.style);
@@ -266,10 +276,11 @@ public class ToolsStage {
 				
 		});
 
-		buttonRoot.getChildren().addAll(grid, draw, line, angle, cp, sld);
+		buttonRoot.getChildren().addAll(grid, draw, line, angle, cp, sld, save);
 		if (!disableDrag)
 			buttonRoot.getChildren().add(drag);
 
+		buttonRoot.autosize();
 		toolsStage.setScene(buttonScene);
 
 		return toolsStage;

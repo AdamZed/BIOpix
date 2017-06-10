@@ -1,8 +1,10 @@
 package movement;
 
 import java.io.*;
+import javax.imageio.ImageIO;
 import javafx.geometry.*;
 import javafx.application.*;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.*;
 import javafx.scene.image.*;
 import javafx.scene.image.Image;
@@ -11,7 +13,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.*;
 
 /**
- * @version 1.5
+ * @version 1.6
  */
 
 public class MainWindow extends Application {
@@ -21,10 +23,11 @@ public class MainWindow extends Application {
 	Pane toolsPane;
 	GridTool grid = new GridTool();
 	Layers layers = new Layers();
+	Pane mainRoot;
+	final FileChooser fileChooser = new FileChooser();
 
 	public void start(Stage mainStage) {
-		final FileChooser fileChooser = new FileChooser();
-
+		
 		mainStage.setTitle("BIOpix");
 
 		// set bounds
@@ -45,7 +48,7 @@ public class MainWindow extends Application {
 		mainStage.setScene(mainScene);
 
 		// create main Root
-		Pane mainRoot = new Pane();
+		mainRoot = new Pane();
 		mainRoot.setLayoutX(0);
 		mainRoot.setLayoutY(0);
 		mainRoot.setStyle("-fx-background: #101010;");
@@ -69,11 +72,6 @@ public class MainWindow extends Application {
 		});
 
 		buildTools();
-		
-		/////////////////////////////
-		//mainScene.setRoot(mainRoot);
-		//toolsStage.getStage().show();
-		/////////////////////////////
 
 		// File Choose set up
 		fileChooseRoot.setOnMouseClicked(e -> {
@@ -102,14 +100,33 @@ public class MainWindow extends Application {
 	}
 
 	private void buildTools() {
-		toolsStage = new ToolsStage(this);
+		toolsStage = new ToolsStage(this);;
 	}
 
 	private static void configureFileChooser(final FileChooser fileChooser) {
-		fileChooser.setTitle("View Pictures");
-		fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+		fileChooser.setTitle("Upload an image");
+		fileChooser.setInitialDirectory(new File(System.getProperty("user.home") + "/Desktop"));
 		fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("PNG", "*.png"),
 				new FileChooser.ExtensionFilter("JPG", "*.jpg"));
+	}
+	
+	void savePNG(final FileChooser fileChooser, Node root)
+	{
+		 //Set extension filter
+	    fileChooser.setTitle("Save Image As");
+
+	    //Prompt user to select a file
+	    File file = fileChooser.showSaveDialog(null);
+	    
+	    WritableImage image = 
+	            new WritableImage((int)root.getScene().getWidth(), (int)root.getScene().getHeight());
+	        root.snapshot(new SnapshotParameters(),image);
+	    
+	    if(file != null){
+	    	try {
+	            ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
+	        } catch (IOException ex) { ex.printStackTrace(); }
+	    }
 	}
 
 }
