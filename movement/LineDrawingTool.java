@@ -16,9 +16,9 @@ public class LineDrawingTool extends Layer {
 	private Pair first = new Pair();
 	private Pair second = new Pair();
 	
-	LineDrawingTool() {
+	LineDrawingTool(int id) {
 		
-		super(2);
+		super(2, id);
 		initialize();
 	}
 
@@ -104,6 +104,11 @@ public class LineDrawingTool extends Layer {
 
 	public Pane getNode() {
 		return root;
+	}
+	
+	public void delete()
+	{
+		((Pane) root.getParent()).getChildren().remove(root);
 	}
 
 }

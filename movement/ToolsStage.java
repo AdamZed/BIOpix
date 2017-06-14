@@ -1,15 +1,17 @@
 package movement;
 
 /**
- * @version 2.4
+ * @version 2.5
  */
 
 import javafx.geometry.Orientation;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -23,7 +25,9 @@ public class ToolsStage {
 	static int selected = -1;
 	private static double initialX, initialY;
 	private static boolean disableDrag = true;
-	private MainWindow main;
+	MainWindow main;
+	DeleteStage delBox = new DeleteStage(this);
+	boolean cpsed = true;
 
 	ToolsStage(MainWindow main) {
 		this.main = main;
@@ -34,13 +38,19 @@ public class ToolsStage {
 		toolsStage.setAlwaysOnTop(true);
 		toolsStage.setTitle("Tools");
 		toolsStage.setX(0);
-		toolsStage.setY(Screen.getPrimary().getVisualBounds().getHeight() - 27);
+		toolsStage.setY(Screen.getPrimary().getVisualBounds().getHeight() - 25);
 		toolsStage.initStyle(StageStyle.UNDECORATED);
-		toolsStage.setWidth(425);
+		toolsStage.setWidth(455);
+		toolsStage.setHeight(50);
 
 		FlowPane buttonRoot = new FlowPane(Orientation.HORIZONTAL);
-		buttonRoot.setStyle("-fx-background: #343434;");
-		Scene buttonScene = new Scene(buttonRoot);
+		VBox mainRoot = new VBox();
+		buttonRoot.getStylesheets().add("/movement/darkStyle.css");
+		mainRoot.getStylesheets().add("/movement/darkStyle.css");
+		Scene buttonScene = new Scene(mainRoot);
+		mainRoot.getChildren().addAll(buttonRoot);
+		buttonRoot.setAlignment(Pos.CENTER_LEFT);
+		buttonRoot.setMinWidth(450);
 
 		Button grid = new Button(); // 0
 		Button draw = new Button(); // 1
@@ -50,13 +60,49 @@ public class ToolsStage {
 		Button save = new Button();
 		ColorPicker cp = new ColorPicker();
 		Slider sld = new Slider();
+		Button cps = new Button();
+		
+		// init cps
+		cps.setStyle(Images.style);
+		cps.setGraphic(Images.cpsUp);
+		cps.setOnMouseEntered(e -> {
+			if(cpsed)
+				cps.setGraphic(Images.cpsUpMO);
+			else
+				cps.setGraphic(Images.cpsDownMO);
+		});
+		
+		cps.setOnMouseExited(e -> {
+			if(cpsed)
+				cps.setGraphic(Images.cpsUp);
+			else
+				cps.setGraphic(Images.cpsDown);
+		});
+		
+		cps.setOnMouseClicked(e -> {
+			if(cpsed)
+			{
+				cps.setGraphic(Images.cpsDownMO);
+				toolsStage.setY(Screen.getPrimary().getVisualBounds().getHeight() - 175);
+				mainRoot.getChildren().remove(buttonRoot);
+				mainRoot.getChildren().addAll(delBox.getList(), buttonRoot);
+				toolsStage.setHeight(200);
+				cpsed = false;
+			} else {
+				cps.setGraphic(Images.cpsUpMO);
+				toolsStage.setY(Screen.getPrimary().getVisualBounds().getHeight() - 25);
+				mainRoot.getChildren().remove(delBox.getList());
+				toolsStage.setHeight(50);
+				cpsed = true;
+			}
+		});
 
 		// initiate slider
 		sld.setSnapToPixel(true);
 		sld.setSnapToTicks(true);
 		sld.setShowTickMarks(true);
 		sld.setMinorTickCount(1);
-		sld.getStylesheets().add("/movement/slider_style.css");
+		sld.getStylesheets().add("/movement/darkStyle.css");
 		sld.setOnMouseDragged(me -> {
 			if (selected == -1)
 			{ } else if (selected == 0) {
@@ -134,6 +180,7 @@ public class ToolsStage {
 				if (main.layers.tail.blank) {
 					main.layers.deleteTail();
 					main.toolsPane.getChildren().remove(main.toolsPane.getChildren().size() - 1);
+					delBox.removeLast();
 				} else
 					main.layers.tail.disable();
 			}
@@ -149,6 +196,7 @@ public class ToolsStage {
 				main.layers.newDraw();
 				main.layers.tail.enable();
 				main.toolsPane.getChildren().add(main.layers.tail.getNode());
+				delBox.add(main.layers.tail.name);
 
 				selected = 1;
 				updateSlider(sld);
@@ -157,6 +205,7 @@ public class ToolsStage {
 				main.layers.newDraw();
 				main.layers.tail.enable();
 				main.toolsPane.getChildren().add(main.layers.tail.getNode());
+				delBox.add(main.layers.tail.name);
 			}
 			
 		});
@@ -177,6 +226,7 @@ public class ToolsStage {
 				if (main.layers.tail.blank) {
 					main.layers.deleteTail();
 					main.toolsPane.getChildren().remove(main.toolsPane.getChildren().size() - 1);
+					delBox.removeLast();
 				} else
 					main.layers.tail.disable();
 			}
@@ -191,6 +241,7 @@ public class ToolsStage {
 				main.layers.newLine();
 				main.layers.tail.enable();
 				main.toolsPane.getChildren().add(main.layers.tail.getNode());
+				delBox.add(main.layers.tail.name);
 
 				selected = 2;
 				updateSlider(sld);
@@ -198,6 +249,7 @@ public class ToolsStage {
 				main.layers.newLine();
 				main.layers.tail.enable();
 				main.toolsPane.getChildren().add(main.layers.tail.getNode());
+				delBox.add(main.layers.tail.name);
 			}
 			
 		});
@@ -219,6 +271,7 @@ public class ToolsStage {
 				if (main.layers.tail.blank) {
 					main.layers.deleteTail();
 					main.toolsPane.getChildren().remove(main.toolsPane.getChildren().size() - 1);
+					delBox.removeLast();
 				} else
 					main.layers.tail.disable();
 			}
@@ -233,6 +286,7 @@ public class ToolsStage {
 				main.layers.newAngle();
 				main.layers.tail.enable();
 				main.toolsPane.getChildren().add(main.layers.tail.getNode());
+				delBox.add(main.layers.tail.name);
 
 				selected = 3;
 				updateSlider(sld);
@@ -241,6 +295,7 @@ public class ToolsStage {
 				main.layers.newAngle();
 				main.layers.tail.enable();
 				main.toolsPane.getChildren().add(main.layers.tail.getNode());
+				delBox.add(main.layers.tail.name);
 			}
 		});
 		
@@ -276,7 +331,7 @@ public class ToolsStage {
 				
 		});
 
-		buttonRoot.getChildren().addAll(grid, draw, line, angle, cp, sld, save);
+		buttonRoot.getChildren().addAll(cps, grid, draw, line, angle, cp, sld, save);
 		if (!disableDrag)
 			buttonRoot.getChildren().add(drag);
 

@@ -1,7 +1,7 @@
 package movement;
 
 /**
- * @version 1.0.1
+ * @version 1.1
  */
 
 import javafx.scene.Node;
@@ -15,15 +15,16 @@ public class Layer
 	String name = "";
 	boolean blank = true;
 	
-	Layer(int type)
+	Layer(int type, int id)
 	{
 		this.type = type;
+		this.layerID = id;
 		if(type == 1)
-			name = "Draw";
+			name = layerID + " Draw";
 		else if (type == 2)
-			name = "Line";
+			name = layerID + " Line";
 		else if (type == 3)
-			name = "Angle";
+			name = layerID + " Angle";
 	}
 	
 	// Overridden by subclasses
@@ -33,5 +34,6 @@ public class Layer
 	public Node getNode(){
 		return null;
 	}
+	public void delete(){}
 	
 }

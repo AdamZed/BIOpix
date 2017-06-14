@@ -100,7 +100,9 @@ public class MainWindow extends Application {
 	}
 
 	private void buildTools() {
-		toolsStage = new ToolsStage(this);;
+		toolsStage = new ToolsStage(this);
+		toolsStage.delBox.add("");
+		toolsStage.delBox.removeLast();
 	}
 
 	private static void configureFileChooser(final FileChooser fileChooser) {

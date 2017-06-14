@@ -1,20 +1,22 @@
 package movement;
 
+
 /**
  * @version 1.2
  */
 
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.layout.Pane;
 
 public class DrawTool extends Layer {
 
 	GraphicsContext gc;
 	Canvas canvas = new Canvas(Images.primaryScreenBounds.getWidth(),Images.primaryScreenBounds.getHeight());
 	
-	DrawTool()
+	DrawTool(int id)
 	{
-		super(1);
+		super(1, id);
 		gc = canvas.getGraphicsContext2D();
 		gc.setLineWidth(ToolsStage.drawSize);
 	}
@@ -50,6 +52,11 @@ public class DrawTool extends Layer {
 	public Canvas getNode()
 	{
 		return canvas;
+	}
+	
+	public void delete()
+	{
+		((Pane) canvas.getParent()).getChildren().remove(canvas);
 	}
 	
 }

@@ -30,9 +30,9 @@ public class AngleDrawingTool extends Layer{
 
 	boolean firstLine = true;
 
-	public AngleDrawingTool() {
+	public AngleDrawingTool(int id) {
 		
-		super(3);
+		super(3, id);
 
 		initialize();
 
@@ -279,6 +279,11 @@ public class AngleDrawingTool extends Layer{
 
 	public Pane getNode() {
 		return root;
+	}
+	
+	public void delete()
+	{
+		((Pane) root.getParent()).getChildren().remove(root);
 	}
 
 }

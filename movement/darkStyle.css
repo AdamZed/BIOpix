@@ -1,0 +1,23 @@
+.root {
+	-fx-background-color: #343434;
+}
+
+.slider .axis .axis-tick-mark, .slider .axis .axis-minor-tick-mark {
+    -fx-fill: null;
+    -fx-stroke: white;
+}
+
+.list-view {
+	-fx-background-color: #1b1b1b;
+	-fx-text-fill: white;
+}
+
+.list-cell:filled:selected:focused, .list-cell:filled:selected {
+    -fx-background-color: #036;
+    -fx-text-fill: white;
+}
+
+.list-cell {
+	-fx-background-color: #1b1b1b;
+	-fx-text-fill: white;
+}

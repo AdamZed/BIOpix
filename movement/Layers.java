@@ -13,9 +13,9 @@ public class Layers {
 	{
 		if(head == null)
 		{
-			head = tail = new AngleDrawingTool();
+			head = tail = new AngleDrawingTool(++maxlayerID);
 		} else {
-			tail.next = new AngleDrawingTool();
+			tail.next = new AngleDrawingTool(++maxlayerID);
 			tail.next.prev = tail;
 			tail = tail.next;
 		}
@@ -25,13 +25,11 @@ public class Layers {
 	{
 		if(head == null)
 		{
-			head = tail = new LineDrawingTool();
-			tail.layerID = ++maxlayerID;
+			head = tail = new LineDrawingTool(++maxlayerID);
 		} else {
-			tail.next = new LineDrawingTool();
+			tail.next = new LineDrawingTool(++maxlayerID);
 			tail.next.prev = tail;
 			tail = tail.next;
-			tail.layerID = ++maxlayerID;
 		}
 	}
 	
@@ -39,13 +37,11 @@ public class Layers {
 	{
 		if(head == null)
 		{
-			head = tail = new DrawTool();
-			tail.layerID = ++maxlayerID;
+			head = tail = new DrawTool(++maxlayerID);
 		} else {
-			tail.next = new DrawTool();
+			tail.next = new DrawTool(++maxlayerID);
 			tail.next.prev = tail;
 			tail = tail.next;
-			tail.layerID = ++maxlayerID;
 		}
 	}
 	
@@ -61,15 +57,32 @@ public class Layers {
 	
 	public void delete(int layerID) {
 		Layer current = head;
-		while(current.next != null && current.next.layerID != layerID)
+		Layer toDelete = null;
+		while(current.next != null && current.next.layerID != layerID) {
 			current = current.next;
-		if(layerID == current.next.layerID)
-		{
-			current.next = current.next.next;
-			current.next.prev = current;
-		} else {
-			// not found
 		}
-	}	
-	
+		if(current.next != null) {
+			if(layerID == current.next.layerID) {
+				toDelete = current.next;
+				current.next.prev = current;
+				current.next = current.next.next;	
+			} else {
+				if (head.layerID == layerID) {
+					toDelete = head;
+					head = head.next;
+					head.prev = null;
+				} else {
+				}
+			}
+		} else {
+			if (head.layerID == layerID) {
+				toDelete = head;
+				head = head.next;
+			} else {
+			}
+		}
+		
+		toDelete.delete();
+		
+	}
 }
