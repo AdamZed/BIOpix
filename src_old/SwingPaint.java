@@ -1,6 +1,7 @@
 package movement;
 
 /**
+ * @deprecated
  * @version 1.1.1
  */
 
